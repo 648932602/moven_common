@@ -181,7 +181,7 @@ public class JsonResponse implements Serializable {
 	}
 
 	enum StatCode {
-		SUCCESS(1, "ok"), FAILED(-1, "请求失败！");
+		SUCCESS(1, "ok"), FAILED(-1, "failed");
 		private int code;
 		private String msg;
 
