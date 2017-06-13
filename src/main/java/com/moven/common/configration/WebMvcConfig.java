@@ -51,6 +51,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		jsonFeatures.add(SerializerFeature.WriteNullStringAsEmpty);
 		jsonFeatures.add(SerializerFeature.WriteMapNullValue);
 		// jsonFeatures.add(SerializerFeature.WriteDateUseDateFormat);
+		converters.add(jsonConverter);
 		System.out.println("-----messageConverters msw-----");
 		super.configureMessageConverters(converters);
 	}
