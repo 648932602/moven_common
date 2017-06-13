@@ -1,16 +1,22 @@
 package com.moven.common.configration;
 
+import java.io.IOException;
+
 import javax.sql.DataSource;
 
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSON;
+import com.moven.common.prop.JdbcConfig;
 
 /**
  * <p>
@@ -25,139 +31,75 @@ import com.alibaba.fastjson.JSON;
  */
 @Configuration
 public class DataSourceConfig {
+	/** * mybatis mapper resource 路径 */
+	private static String MAPPER_PATH = "*/mapper/*Mapper.xml";
+	/** * mybatis 配置路径 */
+	private static String MYBATIS_CONFIG = "conf/mybatis/MyBatisConfig.xml";
+	/** * mapper 类路径 */
+	private static String MAPPER_PACKAGE = "com.moven.isso.mapper";
+	
 	@Autowired
 	private JdbcConfig jdbcConfig;
+	
+//	@Autowired
+//	public DataSourceConfig(JdbcConfig jdbcConfig) {
+//		super();
+//		this.jdbcConfig = jdbcConfig;
+//	}
 
-	@Bean(name = "dataSource", destroyMethod = "close")
+	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
 		System.out.println("-----dataSource msw-----");
-		System.out.println(JSON.toJSON(jdbcConfig));
 		DruidDataSource dataSource = new DruidDataSource();
-		dataSource.setDriverClassName(jdbcConfig.driverClass);
-		dataSource.setUrl(jdbcConfig.url);
-		dataSource.setUsername(jdbcConfig.username);
-		dataSource.setPassword(jdbcConfig.password);
+		dataSource.setDriverClassName(jdbcConfig.getDriverClass());
+		dataSource.setUrl(jdbcConfig.getUrl());
+		dataSource.setUsername(jdbcConfig.getUsername());
+		dataSource.setPassword(jdbcConfig.getPassword());
 		// 初始化连接大小
-		dataSource.setInitialSize(jdbcConfig.initialSize);
+		dataSource.setInitialSize(jdbcConfig.getInitialSize());
 		// 连接池最大数量
-		dataSource.setMaxActive(jdbcConfig.maxActive);
+		dataSource.setMaxActive(jdbcConfig.getMaxActive());
 		// 连接池最大空闲
-		dataSource.setMaxIdle(jdbcConfig.maxIdle);
+		dataSource.setMaxIdle(jdbcConfig.getMaxIdle());
 		// 连接池最小空闲
-		dataSource.setMinIdle(jdbcConfig.minIdle);
+		dataSource.setMinIdle(jdbcConfig.getMinIdle());
 		// 获取连接最大等待时间
-		dataSource.setMaxWait(jdbcConfig.maxWait);
+		dataSource.setMaxWait(jdbcConfig.getMaxWait());
 		System.out.println("-----dataSource msw-----");
 		return dataSource;
 	}
 
 	/**
-	 * <p>Title:JdbcConfig</p>
-	 * <p>Description:数据库连接配置信息</p>
-	 * @author moshengwei
-	 * @date 2017年6月12日 下午9:43:31
+	 * 创建sqlSessionFactoryBean 实例 并且设置configtion 如驼峰命名.等等 设置mapper 映射路径
+	 * 设置datasource数据源
+	 * 
+	 * @return
 	 */
-	@PropertySource(value = "classpath*:conf/properties/mybatis.properties")
-	@Component
-	static class JdbcConfig {
-		/** * 驱动名称 */
-		@Value("${jdbc.driverclassname}")
-		private String driverClass;
-		/** * 数据库连接url */
-		@Value("${jdbc.url}")
-		private String url;
-		/** * 数据库用户名 */
-		@Value("${jdbc.username}")
-		private String username;
-		/** * 数据库密码 */
-		@Value("${jdbc.password}")
-		private String password;
-		/** * 初始化连接数 */
-		@Value("${jdbc.initialSize}")
-		private int initialSize;
-		/** * 最大连接数 */
-		@Value("${jdbc.maxActive}")
-		private int maxActive;
-		/** * 最大空闲 */
-		@Value("${jdbc.maxIdle}")
-		private int maxIdle;
-		/** * 最小空闲 */
-		@Value("${jdbc.minIdle}")
-		private int minIdle;
-		/** * 最大等待时间 */
-		@Value("${jdbc.maxWait}")
-		private int maxWait;
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getDriverClass() {
-			return driverClass;
-		}
-
-		public void setDriverClass(String driverClass) {
-			this.driverClass = driverClass;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-
-		public int getInitialSize() {
-			return initialSize;
-		}
-
-		public void setInitialSize(int initialSize) {
-			this.initialSize = initialSize;
-		}
-
-		public int getMaxActive() {
-			return maxActive;
-		}
-
-		public void setMaxActive(int maxActive) {
-			this.maxActive = maxActive;
-		}
-
-		public int getMaxIdle() {
-			return maxIdle;
-		}
-
-		public void setMaxIdle(int maxIdle) {
-			this.maxIdle = maxIdle;
-		}
-
-		public int getMinIdle() {
-			return minIdle;
-		}
-
-		public void setMinIdle(int minIdle) {
-			this.minIdle = minIdle;
-		}
-
-		public int getMaxWait() {
-			return maxWait;
-		}
-
-		public void setMaxWait(int maxWait) {
-			this.maxWait = maxWait;
-		}
+	@Bean(name = "sqlSessionFactory")
+	public SqlSessionFactoryBean createSqlSessionFactoryBean() throws IOException {
+		System.out.println("-----sqlSessionFactoryBean msw-----");
+		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
+		/** 添加mapper 扫描路径 */
+		PathMatchingResourcePatternResolver mapperPathResolver = new PathMatchingResourcePatternResolver();
+		String mapperPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + MAPPER_PATH;
+		sqlSessionFactory.setMapperLocations(mapperPathResolver.getResources(mapperPath));
+		/** 设置mybatis configuration 扫描路径 */
+		ResourceLoader cofingPathLoader = new DefaultResourceLoader(); 
+		String configPath = ResourceLoader.CLASSPATH_URL_PREFIX + MYBATIS_CONFIG;
+		sqlSessionFactory.setConfigLocation(cofingPathLoader.getResource(configPath));
+		/** 设置datasource */
+		sqlSessionFactory.setDataSource(dataSource());
+		System.out.println("-----sqlSessionFactoryBean msw-----");
+		return sqlSessionFactory;
 	}
+	
+	@Bean
+	public static MapperScannerConfigurer createMapperScannerConfigurer(){
+		System.out.println("-----mapperScannerConfigurer msw-----");
+		MapperScannerConfigurer mapperScanner = new MapperScannerConfigurer();
+		mapperScanner.setBasePackage(MAPPER_PACKAGE);
+		mapperScanner.setSqlSessionFactoryBeanName("sqlSessionFactory");
+		return mapperScanner;
+	}
+
 }
