@@ -41,6 +41,7 @@ public class SqlSessionFactoryConfig {
 	 */
 	@Bean(name = "sqlSessionFactory")
 	public SqlSessionFactoryBean createSqlSessionFactoryBean() throws IOException {
+		System.out.println("-----sqlSessionFactoryBean msw-----");
 		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
 		/** 设置mybatis configuration 扫描路径 */
 		sqlSessionFactory.setConfigLocation(new ClassPathResource(MYBATIS_CONFIG));
@@ -50,6 +51,7 @@ public class SqlSessionFactoryConfig {
 		sqlSessionFactory.setMapperLocations(pathMatchingResourcePatternResolver.getResources(packageSearchPath));
 		/** 设置datasource */
 		sqlSessionFactory.setDataSource(dataSource);
+		System.out.println("-----sqlSessionFactoryBean msw-----");
 		return sqlSessionFactory;
 	}
 }

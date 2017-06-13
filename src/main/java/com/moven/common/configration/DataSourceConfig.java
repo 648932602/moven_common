@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.fastjson.JSON;
 
 /**
  * <p>
@@ -29,6 +30,8 @@ public class DataSourceConfig {
 
 	@Bean(name = "dataSource", destroyMethod = "close")
 	public DataSource dataSource() {
+		System.out.println("-----dataSource msw-----");
+		System.out.println(JSON.toJSON(jdbcConfig));
 		DruidDataSource dataSource = new DruidDataSource();
 		dataSource.setDriverClassName(jdbcConfig.driverClass);
 		dataSource.setUrl(jdbcConfig.url);
@@ -44,6 +47,7 @@ public class DataSourceConfig {
 		dataSource.setMinIdle(jdbcConfig.minIdle);
 		// 获取连接最大等待时间
 		dataSource.setMaxWait(jdbcConfig.maxWait);
+		System.out.println("-----dataSource msw-----");
 		return dataSource;
 	}
 
