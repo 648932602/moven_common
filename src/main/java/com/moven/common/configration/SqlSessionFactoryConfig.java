@@ -61,6 +61,15 @@ public class SqlSessionFactoryConfig {
 		return sqlSessionFactory;
 	}
 	
+	/**
+	 * Description:创建 mapper 扫描类
+	 * 因为实现了 BeanDefinitionRegistryPostProcessor 接口，所以方法应该为静态方法
+	 * 因为该接口继承了 BeanFactoryPostProcessor 接口
+	 * BeanFactoryPostProcessor 接口是在 spring 容器加载了 bean 的定义文件之后，在 bean 实例化之前执行的。
+	 * @author moshengwei
+	 * @date 2017年6月14日 上午10:28:42
+	 * @return
+	 */
 	@Bean
 	public static MapperScannerConfigurer createMapperScannerConfigurer(){
 		System.out.println("-----mapperScannerConfigurer msw-----");

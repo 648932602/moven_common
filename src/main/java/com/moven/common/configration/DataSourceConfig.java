@@ -1,21 +1,12 @@
 package com.moven.common.configration;
 
-import java.io.IOException;
-
 import javax.sql.DataSource;
 
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.fastjson.JSON;
 import com.moven.common.prop.JdbcConfig;
 
 /**
@@ -33,12 +24,6 @@ import com.moven.common.prop.JdbcConfig;
 public class DataSourceConfig {
 	@Autowired
 	private JdbcConfig jdbcConfig;
-	
-//	@Autowired
-//	public DataSourceConfig(JdbcConfig jdbcConfig) {
-//		super();
-//		this.jdbcConfig = jdbcConfig;
-//	}
 
 	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
