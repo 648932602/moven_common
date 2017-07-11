@@ -2,10 +2,9 @@ package com.moven.common.configration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.moven.common.prop.JdbcConfig;
 
@@ -21,6 +20,10 @@ import com.moven.common.prop.JdbcConfig;
 	JdbcConfig.class,
 	DataSourceConfig.class,
 	SqlSessionFactoryConfig.class
+})
+@ImportResource({
+//    "classpath:com/moven/sso/dubbo-provider.xml",
+    "classpath:com/moven/sso/dubbo-reference.xml"
 })
 public class RootConfig {
 	@Bean
