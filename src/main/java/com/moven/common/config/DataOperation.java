@@ -1,4 +1,4 @@
-package com.moven.common.configration;
+package com.moven.common.config;
 
 /**
  * 数据库操作

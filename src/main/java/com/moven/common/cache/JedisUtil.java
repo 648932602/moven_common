@@ -2,7 +2,7 @@ package com.moven.common.cache;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import com.moven.common.cache.client.JedisPoolUtil;
+import com.moven.common.cache.client.JedisPoolManager;
 import com.moven.common.utils.SerializeUtil;
 
 import redis.clients.jedis.Jedis;
@@ -44,10 +44,10 @@ public class JedisUtil {
 			return result;
 		}
 		try {
-			Jedis jedis = JedisPoolUtil.getJedis();
+			Jedis jedis = JedisPoolManager.getJedis();
 			jedis.set(key.getBytes(), SerializeUtil.serialize(value));
 			jedis.expire(key.getBytes(), timeOut);
-			JedisPoolUtil.returnRes(jedis);
+			JedisPoolManager.returnRes(jedis);
 			result = true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,14 +65,14 @@ public class JedisUtil {
 	public static Object get(String key) {
 		Object result = null;
 		try {
-			Jedis jedis = JedisPoolUtil.getJedis();
+			Jedis jedis = JedisPoolManager.getJedis();
 			byte[] value = jedis.get(key.getBytes());
 			if(ArrayUtils.isEmpty(value)){
 				result = null;
 			} else {
 				result = SerializeUtil. unserialize(value);
 			}
-			JedisPoolUtil.returnRes(jedis);
+			JedisPoolManager.returnRes(jedis);
 		} catch (Exception e) {
 			result = null;
 		}
@@ -87,9 +87,9 @@ public class JedisUtil {
 	public static boolean remove(String key) {
 		boolean result = false;
 		try {
-			Jedis jedis = JedisPoolUtil.getJedis();
+			Jedis jedis = JedisPoolManager.getJedis();
 			long effectNum = jedis.del(key.getBytes());
-			JedisPoolUtil.returnRes(jedis);
+			JedisPoolManager.returnRes(jedis);
 			if(effectNum > 0){
 				result = true;
 			}
@@ -107,9 +107,9 @@ public class JedisUtil {
 	public static boolean removeAll() {
 		boolean result = false;
 		try {
-			Jedis jedis = JedisPoolUtil.getJedis();
+			Jedis jedis = JedisPoolManager.getJedis();
 			String resultStr = jedis.flushAll();
-			JedisPoolUtil.returnRes(jedis);
+			JedisPoolManager.returnRes(jedis);
 			if(STATUS_OK.equals(resultStr)){
 				result = true;
 			}
